@@ -350,7 +350,7 @@
                 
                     // get module name and replace with id (to load the same modules in runtime)
                     $mod_id = 'm_' . gen_sess_id ( 30 );
-                    if (! preg_match ( '/class ([a-zA-Z0-9\-_]+) {/i', $mod_raw, $match ) ) {
+                    if (! preg_match ( '/class ([a-zA-Z0-9\-_]+)(.*){/i', $mod_raw, $match ) ) {
                     
                         // if there is no module name found, throw error
                         aout('MODULE_ERROR_NOCLASS',MODULE_PATH . $file );
@@ -359,7 +359,7 @@
                     }
                     
                     $mod_name = trim ($match[1]);
-                    $mod_com  = str_ireplace ( 'class ' . $mod_name . ' {', 'class ' . $mod_id . ' {', $mod_raw );
+                    $mod_com  = str_ireplace ( 'class ' . $mod_name . $match[2] . '{', 'class ' . $mod_id . $match[2] . '{', $mod_raw );
                     
                     if ( isset ( IRCCore::$mod_name2id [ $mod_name ] ) ) {
                     

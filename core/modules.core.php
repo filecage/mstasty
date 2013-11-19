@@ -22,7 +22,10 @@
     *   software.                                      *
     *                                                  *
     ***************************************************/
-    
+
+    require_once CORE_PATH . 'abstract/Module.php';
+    require_once CORE_PATH . 'interface/InteractiveModule.php';
+
     
     class core_modules Extends IRCCore {
     
