@@ -1,31 +1,26 @@
 <?php
 
-    class module_dnsresolver {
-    
-    
-        function __construct (&$core,$id) {
-        
-            $this -> core = &$core;
-            $this -> id   = $id;
-                
-            $core -> register ( 'PRIVMSG', '?dns', true, $id );
-            
-            // introduce antispam array
-            $this -> last_dns_of = array();
-            
-        
+    class module_dnsresolver extends AbstractModule implements InteractiveModule {
+
+        /**
+         * @var Array
+         */
+        protected $last_dns_of = Array();
+
+        /**
+         * Usage: ?dns <ip|host>
+         */
+        protected function initialize() {
+            $this->core->register('PRIVMSG', '?dns', true, $this->id);
         }
-        
-        function in ( $in ) {
+
+        public function in ($in) {
         
             // if nothing is set yet, then set it
-            if ( !isset ( $this ->last_dns_of [ $in['args'][0] ] ) ) {
-            
-                $this -> last_dns_of [$in['args'][0]] = 0;
-                
+            if (!isset($this->last_dns_of[$in['args'][0]])) {
+                $this->last_dns_of[$in['args'][0]] = 0;
             }
-            
-            
+
             // check for antispam
             if ( $this -> last_dns_of [$in['args'][0]] < time() ) {
             
@@ -104,13 +99,6 @@
             }
             
         
-        }
-        
-        
-        function privmsg ( $chan, $msg ) {
-        
-            $this -> core -> privmsg ( $chan, $msg );
-            
         }
             
     }
