@@ -1,213 +1,119 @@
 <?php
-/*************************************
-* dPHPLib Version 1.2.5 Beta         *
-**************************************
-* This mod is licensed under GNU/GPL *
-* That means, you can EDIT and re-   *
-* distribute it, as long as you dont *
-* edit any copyright information.    *
-*                                    *
-*  SEE LICENSE.TXT FOR FURTHER INFO  *
-*                                    *
-* If you make any changes, you may   *
-*      add a notice below.           *
-*                                    *
-**************************************/
 
-    
-    function out($str='',$opt=false,$scream=false,$clean=false) {
-        if($scream==2&&empty($str)){
-            return false;
+    /**
+     * Does some default outputs
+     *
+     * @param string $str
+     * @param bool $opt
+     * @param bool $scream
+     * @param bool $clean Whether to pipe the input through the langauge manager
+     */
+    function out($str = '', $opt = false, $scream = false, $clean = false) {
+
+        // If this is an empty notice, just gtfo
+        if (!$scream && empty($str)) {
+            return;
         }
+
         global $lang_mng;
         global $config;
-        if($scream!==false&&$scream>$config['BOT']['output']){
-            return false;
-        }
-        if (is_object($lang_mng)&&$clean==false&&!empty($str)){
-            if ($config['BOT']['output']>0||$scream==true) {
-                echo "\n".'['.date("H:i:s").'] '.$lang_mng->parse_term($str,$opt);
+
+        if (is_object($lang_mng) && !$clean && !empty($str)) {
+            if ($config['BOT']['output'] >= 1 || $scream) {
+                echo "\n" . '['.date("H:i:s").'] ' . $lang_mng->parse_term($str,$opt);
             }
+        } elseif ($config['BOT']['output'] >= 1 || $scream && !empty($str)) {
+            echo "\n" . '[' . date("H:i:s") . '] ' . $str;
+        } elseif (empty($str)) {
+            echo "\n" .'['.date("H:i:s").']';
         }
-        elseif ($config['BOT']['output']>0||$scream==true&&!empty($str)) {
-            echo "\n".'['.date("H:i:s").'] '.$str;
-        }
-        elseif (empty($str)){echo"\n".'['.date("H:i:s").']';}
-    }
-    function aout($str='',$opt=false,$scream=false,$clean=false) {
-        global $lang_mng;
-        global $config;
-        if (is_object($lang_mng)&&$clean==false&&!empty($str)){
-            if ($config['BOT']['output']>0||$scream==true) {
-                echo "\n".'['.date("H:i:s").'] *** '.$lang_mng->parse_term($str,$opt);
-            }
-        }
-        elseif ($config['BOT']['output']>0||$scream==true&&!empty($str)) {
-            echo "\n".'['.date("H:i:s").'] *** '.$str;
-        }
-        elseif (empty($str)){echo"\n".'['.date("H:i:s").']  ***';}
-    }
-    function rout($str='',$opt=false,$scream=false,$clean=false) {
-        global $lang_mng;
-        global $config;
-        if (is_object($lang_mng)&&$clean==false&&!empty($str)){
-            if ($config['BOT']['output']>0||$scream==true) {
-                echo "\r".'['.date("H:i:s").'] '.$lang_mng->parse_term($str,$opt);
-            }
-        }
-        elseif ($config['BOT']['output']>0||$scream==true&&!empty($str)) {
-            echo "\r".'['.date("H:i:s").'] '.$str;
-        }
-        elseif (empty($str)){echo"\r".'['.date("H:i:s").'] ***';}
+
     }
 
-    function file_run_contents($filename) {
-        ob_start();
-        include($filename);
-        $output = ob_get_contents();
-        ob_end_clean();
-        return $output;
-    }
-    function bind_content($filename) {
-        ob_start();
-        include($filename);
-        $output = ob_get_contents();
-        ob_end_clean();
-        return trim($output);
-    }
-    function week() {
-        if (date('L') == 0) {
-            return (ceil((date('z') + 1) / 7) + 1);
-        }
-        else {
-            return (ceil(date('z') / 7) + 1);
-        }
-    }
-    function makeDate($today,$month,$type) {
-        $year = date("Y");
-        $yeartype = date("L");
-        if ($yeartype == 1) {
-            return date("".$type."",mktime(0, 0, 0, ($month + 1), ($today + 1), ($year - 1)));
-        }
-        else {
-            return date("".$type."",mktime(0, 0, 0, ($month + 1), $today, ($year - 1)));
+    /**
+     * Does system outputs
+     *
+     * @param string $str
+     * @param Array $opt
+     * @param bool $scream Ignore the bot verbosity setting and push this message
+     * @param bool $clean Whether to pipe the input through the langauge manager
+     */
+    function aout($str='', $opt = null, $scream = false, $clean = false) {
+
+        global $lang_mng;
+        global $config;
+
+        if (is_object($lang_mng) && !$clean && !empty($str)) {
+            if ($config['BOT']['output'] >= 1 || $scream) {
+                echo "\n" . '['.date("H:i:s").'] *** ' . $lang_mng->parse_term($str, $opt);
+            }
+        } elseif ($config['BOT']['output'] >= 1 || $scream && !empty($str)) {
+            echo "\n" . '['.date("H:i:s") . '] *** ' . $str;
+        } elseif (empty($str)){
+            echo "\n" . '['.date("H:i:s").']  ***';
         }
     }
-    function cfx($str) {
-        return base64_encode($str);
-    }
-    function checkOk($constant) {
-        if (defined($constant)) {
-            return true;
-        }
-        else {
-            die('You are not authorized to access this site.');
-        }
-    }
-    function escapeString($str,$method) {
-        $str = trim($str);
-        if ($method == 'mysql') {
-            $str = mysql_escape_string($str);
-        }
-        elseif ($method == 'html') {
-            $str = htmlentities($str, ENT_QUOTES);
-        }
-        elseif ($method == 'multi') {
-            $str = mysql_escape_string($str);
-            $str = htmlentities($str, ENT_QUOTES);
-        }
-        return $str; 
-    }
-    function dateForm($date) {
-        $monat = array('','Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember');
-        $date2 = $date;
-        $year = substr($date, 0, 4);
-        $month = substr($date, 5, 2);
-        $day = substr($date, 8, 2);
-        $month = round($month);
-        $month = $monat[$month];
-        $date = 'am ' . $day . '. ' . $month . ' ' . $year;
-        $yearMonth = date("Y-m");
-        $today = date("d");
-        $todayYearMonth = $yearMonth . '-' . $today;
-        if ($todayYearMonth == $date2) {
-            $date = 'Heute';
-        }
-        if ($today != '01') {
-            $yesterday = ($today - 1);
-            $yesterdayYearMonth = $yearMonth . '-' . $yesterday;
-        }
-        if ($yesterdayYearMonth == $date2) {
-        $date = 'Gestern';
-        }
-        return $date;
-    }
-    function paperheight($papername) {
-        $name = strtolower($papername);
-        switch($name) {
-            case "dl": return 11/2.54*72;
-            case "m65": return paperheight("c6");
-            case "ledger": case "tabloid": return  17*72;
-            case "legal": return paperwidth("ledger");
-            case "letter": return 11*72;
-            default: return paperwidth($name)*sqrt(2);
-        }
-    }
-    function paperwidth($papername) {
-        $name = strtolower($papername);
-        switch($name) {
-            case "dl": return 22/2.54*72;
-            case "m65": return paperwidth("c5");
-            case "ledger": case "tabloid": return  14*72;
-            case "legal": case "letter": return paperheight("ledger")>>1;
-            default:
-            $i=strpos("ebca",$name{0});
-            $j=substr($name,1);
-            if($i!=false && ($j>0 || $j==="0"))
-                return 100/(pow(2,($i+$j*4-1)/8))/2.54*72;
-            else { die("Unkown paper format: $papername"); }
-        }
-    }
+
+    /**
+     * Transforms a hex colour to a rgb array
+     *
+     * @param $hex
+     * @return array
+     */
     function hex2rgb($hex) {
         $color = str_replace('#','',$hex);
-        $rgb = array(
+        $rgb   = Array(
             'r' => hexdec(substr($color,0,2)),
             'g' => hexdec(substr($color,2,2)),
-            'b' => hexdec(substr($color,4,2)));
+            'b' => hexdec(substr($color,4,2))
+        );
+
         return $rgb;
     }
-    function rgb2cmyk($var1) {
-        if(is_array($var1)) {
-            $r = $var1['r'];
-            $g = $var1['g'];
-            $b = $var1['b'];
+
+    /**
+     * Transforms a rgb array to a cmyk array
+     *
+     * @param Array $rgb
+     * @return Array
+     */
+    function rgb2cmyk($rgb) {
+
+        if (!is_array($rgb)) {
+            return Array();
         }
-        else { 
-            $r=$var1;
-            $cyan    = 255 - $r;
-            $magenta = 255 - $g;
-            $yellow  = 255 - $b;
-            $black   = min($cyan, $magenta, $yellow);
-            $cyan    = @(($cyan    - $black) / (255 - $black)) * 255;
-            $magenta = @(($magenta - $black) / (255 - $black)) * 255;
-            $yellow  = @(($yellow  - $black) / (255 - $black)) * 255;
-            return array(
-                'c' => $cyan / 255,
-                'm' => $magenta / 255,
-                'y' => $yellow / 255,
-                'k' => $black / 255
-            );
-        }
+
+        $r = $rgb['r'];
+        $g = $rgb['g'];
+        $b = $rgb['b'];
+
+        $cyan    = 255 - $r;
+        $magenta = 255 - $g;
+        $yellow  = 255 - $b;
+        $black   = min($cyan, $magenta, $yellow);
+        $cyan    = @(($cyan    - $black) / (255 - $black)) * 255;
+        $magenta = @(($magenta - $black) / (255 - $black)) * 255;
+        $yellow  = @(($yellow  - $black) / (255 - $black)) * 255;
+
+        return Array(
+            'c' => $cyan / 255,
+            'm' => $magenta / 255,
+            'y' => $yellow / 255,
+            'k' => $black / 255
+        );
+
     }
-    function runtimeError($type,$function,$message) {
-        die('<b>dPHPLib Error:</b> '.$type.' error while calling '.$function.'() - '.$message);
-    }
-    function runtimeWarning($function,$message) {
-        echo '<b>dPHPLib Warning:</b> While calling '.$function.'(): '.$message;
-    }
+
+    /**
+     * Generates a random session id
+     *
+     * @param int $len
+     * @return string
+     */
     function gen_sess_id($len=9) {
+
         // Define vars
-        $chars    = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+        $chars    = Array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
         $session  = '';
     
         // Set session ID
@@ -226,130 +132,9 @@
         }
         return $session;
     }
-    function array_sortbykey($array,$start) {
-        if (!is_array($array)) {
-            runtimeError('syntax','array_sortbykey','given value 1 is no array.');
-        }
-        $indexed = '-';
-        $return  = array();
-        #echo substr_count($indexed,',').'-'.count($array);
-        
-        while (substr_count($indexed,',') < count($array)) {
-            foreach ($array as $key => $value) {
-                if ($key == $start) {
-                    $return[$key] = $value;
-                    $start++;
-                    $indexed .= $key.',';
-                }
-            }
-        }
-        return $return;
-    }
-    
-    function replace($string,$array,$replace) {
-        if (is_array($array)) {
-            if (is_array($replace)) {
-                foreach ($array as $key => $expr) {
-                    $string = str_replace($expr,$replace[$key],$string);
-                }
-            }
-            elseif (gettype($replace) == 'string') {
-                foreach ($array as $expr) {
-                    $string = str_replace($expr,$replace,$string);
-                }
-            }
-            return $string;
-        }
-        else {
-            runtimeError('syntax','replace','given value 2 is no array.');
-        }
-    }
-    function isValidEmail($email,$type='ereg') {
-        if (strtoupper(substr($type,0,4)) == 'SAVE') {
-            $save   = true;
-            $return = false;
-            $type   = substr($type,4,strlen($type));
-        }
-        else {
-            $return = true;
-        }
-        if ($type == 'ereg' || $type == 'both') {
-            if (ereg("^.+@.+\\..+$", $email)) {
-                $return = true;
-            }
-            else {
-                $return = false;
-            }
-        }
-        if ($type == 'dns' || $type == 'both') {
-            if (lib_checkdnsrr(substr($email,(strpos($email,'@')+1),strlen($email)),'MX')) {
-                if ($save) {
-                    $return = true;
-                }
-                else {
-                    $return = false;
-                }
-            }
-            else {
-                $return = false;
-            }
-        }
-        return $return;
-    }
-    function operatingSystem() {
-        if (strtoupper(substr(PHP_OS,0,3)) == 'WIN') {
-            return 'WIN';
-        }
-        else {
-            return 'NIX';
-        }
-    }
-    function lib_checkdnsrr($host,$type='UNDEFINED') {
-        $type  = strtoupper($type);
-        $types = array('A', 'MX', 'NS', 'SOA', 'PTR', 'CNAME', 'AAAA', 'A6', 'SRV', 'NAPTR', 'TXT', 'ANY');
-        
-        if ($type != 'UNDEFINED' && in_array($type,$types)) {
-        }
-        elseif (!in_array($type,$types) && $type != 'UNDEFINED') {
-            runtimeWarning('lib_checkdnsrr','Given attribute 2 (type) for function is not supported. Must be one of <a href="http://www.php.net/checkdnsrr">them</a>.');
-            return false;
-        }
-        if ($type == 'UNDEFINED') {
-            $type = 'A';
-        }
-        if (operatingSystem() == 'WIN') {
-            @exec('nslookup -type='.$type.' '.escapeshellcmd($host), $output);
-            foreach ($output as $line) {
-                if (preg_match('/^'.$host.'/',$line)) { 
-                    return true; 
-                }
-                else {
-                    return false;
-                }
-            }
-        }
-        else {
-            if (checkdnsrr($host,$type)) {
-                return true;
-            }
-            elseif (!checkdnsrr($host,$type)) {
-                return false;
-            }
-            else {
-                runtimeWarning('lib_checkdnsrr','dPHPLib was not able to call method "checkdnsrr()". Is your PHP installation correct?');
-                if (!is_function(checkdnsrr())) {
-                    runtimeError('PHP installation fail','dPHPLib was not able to call method "checkdnsrr()". It seems not to be installed on your system.');
-                }
-            }
-        }
-    }
-    function micro_time() {
-        $time = explode( " ", microtime() ); 
-        return( (float) $time[ 0 ] + (float) $time[ 1 ] ); 
-    }
-    function duration($time,$time2) {
-        $time  = $time2;
-        $time2 = time();
+
+    function durationInString($time, $time2) {
+
         $runtime     = ($time2-$time);
         if ($runtime < 0) {
             $runtime = $runtime*(-1);
@@ -364,9 +149,7 @@
                 if ($runtimeH > 24) {
                     $runtimeD = floor($runtimeH/24);
                     $runtimeH = ($runtimeH-($runtimeD*24));
-                    if ($runtimeD > 1) {
-                        $s = 's';
-                    }
+                    $s = ($runtimeD != 1) ? 's' : '';
                     $runtimeShow  = $runtimeD.' day'.$s.', ';
                 }
                 $runtimeShow  .= $runtimeH.' ';
@@ -393,6 +176,7 @@
         }
         return $runtimeShow;
     }
+
     function durationApprox($time) {
         if ($time > time()) {
             $sec    = $time-time();
@@ -454,6 +238,7 @@
         }
         return $return;
     }
+
     function ASCIIformat($str,$len) {
         $str  = trimText($str,$len);
         $loss = $len-strlen($str);
