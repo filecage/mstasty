@@ -74,21 +74,21 @@
         'MODULE_ERROR_READFAIL'       => 'Got instruction to load module %0%, but it doesn\'t exist.',
         'MODULE_ERROR_EXECFAIL'       => 'Error while executing %0%: %1% (%3%) in file [%4%] on line %2%.',
         'MODULE_ERROR_ALREADYGOT'     => 'Error while loading module %0%, it\'s already loaded.',
-        'MODULE_ERROR_NOCLASS'        => 'Error parsing module %0%: it doesn\'t seem to be a valid PHP class.',
+        'MODULE_ERROR_NOCLASS'        => 'Error parsing module %0%, file does not match module formation rules',
         'MODULE_LOAD'                 => 'Loading module %0%...',
-        'MODULE_LOAD_FAIL_NONEXIST'   => 'Error: Module %0% is not existing or can not be loaded.',
+        'MODULE_LOAD_FAIL_NONEXIST'   => 'Error: Module %0% does not exist or can not be loaded.',
         'MODULE_LOAD_FAIL'            => 'Error while loading module %0%. Check the log or the console output for more information.',
-        'MODULE_LOAD_SUCCESS'         => 'Module %0% has been successfully loaded.',
+        'MODULE_LOAD_SUCCESS'         => 'Module %0% successfully loaded.',
         'MODULE_UNLOAD_SUCCESS'       => 'Module %0% successfully unloaded.',
-        'MODULE_REHASH_SUCCESS'       => 'Modul %0% successfully rehashed.',
-        'MODULE_UNLOAD_FAIL_NOLOAD'   => 'Modul %0% can not be unloaded; there is no such module loaded.',
+        'MODULE_REHASH_SUCCESS'       => 'Module %0% successfully rehashed.',
+        'MODULE_UNLOAD_FAIL_NOLOAD'   => 'Module %0% can not be unloaded; there is no such module loaded.',
         'MODULE_LIST_NOMOD'           => 'There is no module loaded.',
         'MODULE_LIST_INTRO'           => 'Loaded modules:'."\n".
                                          '-------------------------------------------------------------',
         'MODULE_LIST_OUTTRO'          => '-------------------------------------------------------------'."\n".
                                          'Total: %0%',
         
-        'COMMAND_PERMISSION_DENIED'   => 'You have not the permission to run this command.',
+        'COMMAND_PERMISSION_DENIED'   => 'One does not simply admin into MsTasty.',
     
     );
     
