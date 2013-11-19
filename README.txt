@@ -1,3 +1,7 @@
+NOTICE:
+This is an old project from 2010. Most of the code is really bad, but the bot still works.
+Do not try to learn from here.
+
 /***************************************************
 *    __  __    _____         _           ____      *
 *   |  \/  |__|_   _|_ _ ___| |_ _   _  |___ \     *
@@ -20,7 +24,6 @@
 *   software.                                      *
 *                                                  *
 ***************************************************/
-
 
 ============================================
 1.  Long list of unstructured documentations
