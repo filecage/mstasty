@@ -8,7 +8,7 @@
     *   |_|  |_|___/|_|\__,_|___/\__|\__, | |_____|    *
     *                                |___/             *
     *   MsTasty Core 2                                 *
-    *   (C) 2010 dbeuchert.com // David Beuchert       *
+    *   http://github.com/filecage/mstasty             *
     *                                                  *
     *   This software is licensed under GNU GPL.       *
     *   You can use, edit and redistribute it for free *
