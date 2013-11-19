@@ -25,7 +25,7 @@
     *                                                  *
     ***************************************************/
     
-    echo "\nMsTasty 2 (C) dbeuchert.com\nwww.dbeuchert.com/mstasty\n";
+    echo "\nMsTasty 2 (Reloaded)\nhttp://github.com/filecage/mstasty\n";
     
     set_time_limit(0);
     
