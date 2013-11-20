@@ -49,7 +49,7 @@
                     
                     
                     // check if there are records
-                    if ( count ( $q_result ) > 0 ) {
+                    if (is_array($q_result) && !empty($q_result)) {
                     
                         switch ( $type ) {
                         
@@ -83,9 +83,7 @@
                     
                     }
                     else {
-                    
                         $return = 'Lookup for "' . $query . '" failed, target is unknown to me.';
-                    
                     }
                     
                     // message output and set timer
