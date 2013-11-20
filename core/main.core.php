@@ -230,89 +230,84 @@
             }
         
         }
+
+        /**
+         * Directly writes to the socket
+         *
+         * @deprecated
+         * @see IRCCore::write
+         * @param string $str The string to write to the socket
+         * @param string $ostr The string to write to the output console (optional)
+         * @param resource $socket A socket to write to
+         */
+        public function snd($str, $ostr = '', $socket=null) {
+            $this->write($str, $ostr, $socket);
+        }
+
+        /**
+         * Directly writes to the socket
+         *
+         * @param string $str The string to write to the socket
+         * @param string $ostr The string to write to the output console (optional)
+         * @param resource $socket A socket to write to
+         */
+        public function write($str, $ostr='', $socket=null) {
         
-        public function snd ( $str, $ostr='', $socket=false ) {
-        
-            // check if given socket is the connection
-            if ( !is_resource ( $socket ) ) {
-            
-                // if not, get it from the current object
-                if ( is_resource ( $this -> socket ) ) {
-            
-                    $socket = $this -> socket;
-                    
-                }
-                // if this fails, too, get it from the core
-                elseif ( is_resource ( IRCCore::$o_socket ) ) {
-                
+            // Get stream from given socket, current instance, static core or just cry
+            if (!is_resource($socket)) {
+                if ( is_resource ($this->socket)) {
+                    $socket = $this->socket;
+                } elseif (is_resource(IRCCore::$o_socket)) {
                     $socket = IRCCore::$o_socket;
-                    
-                }
-                else {
-                
-                    // and if this also goes wrong, just give a fail
+                } else {
                     $socket = false;
-                    
                 }
-                
             }
         
-            if ( is_resource ( $socket ) ) {
+            if (is_resource($socket)) {
             
                 // create replace array
-                $_replace = array (
-                
-                    'nick' => $this -> mvar ( 'nick' ),
-                    
+                $_replace = Array (
+                    'nick' => $this->mvar('nick'),
                 );
             
                 // clear sendbuffer if we got lines in it
-                if ( count ( $this -> send_buffer ) > 0 ) {
-                
-                    foreach ( $this -> send_buffer as $str_arr ) {
-                    
-                        fwrite ( $socket , $str_arr[0] . "\r\n" );
+                if (count($this->send_buffer) > 0) {
+                    foreach ($this->send_buffer as $str_arr) {
+                        fwrite ($socket, $str_arr[0] . "\r\n");
                
-                        if ( !empty ( $str_arr[1] ) ) {
-                       
+                        if (!empty ($str_arr[1])) {
                             // if given, output another string than the real-send command
                             $str_arr[0] = $str_arr[1];
-                       
                         }
-                        out ( '(->) ' . $str_arr[0], false, 2, true );
+
+                        out ('(->) ' . $str_arr[0], false, 2, true );
                     
                     }
-                
                 }
                 
-                $str = parse_vars ( $str, $_replace );
+                $str = parse_vars($str, $_replace);
         
                 // write to socket
-                fwrite ( $socket , $str . "\r\n" );
+                fwrite($socket, $str . "\r\n");
                
-                if ( !empty ( $ostr ) ) {
-               
+                if (!empty($ostr)) {
                     // if given, output another string than the real-send command
                     $str = $ostr;
-               
                 }
                 out ( '-> ' . $str, false, 2, true );
                
-            }
+            } else {
+                // Write to buffer if no stream context is available
+                $this->send_buffer[] = Array($str, $ostr);
             
-            else {
-            
-                $this -> send_buffer [] = array($str,$ostr);
-            
-                if ( !empty ( $ostr ) ) {
-               
+                if (!empty($ostr)) {
                     // if given, output another string than the real-send command (password protection)
                     $str = $ostr;
-               
                 }
             
-                aout ( 'SENDBUFFER_NEW_ELEMENT', $str );
-                
+                aout ('SENDBUFFER_NEW_ELEMENT', $str);
+
             }
         
         }
