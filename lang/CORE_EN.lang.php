@@ -89,6 +89,7 @@
                                          'Total: %0%',
         
         'COMMAND_PERMISSION_DENIED'   => 'One does not simply admin into MsTasty.',
+        'COMMAND_UNKNOWN'             => 'So, tell me what you want, what you really really want (because I don\'t know that command)',
     
     );
     
