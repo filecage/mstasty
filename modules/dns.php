@@ -14,6 +14,10 @@
             $this->core->register('PRIVMSG', '?dns', true, $this->id);
         }
 
+        /**
+         * @param Array|MessageParser $in
+         * @return void
+         */
         public function in ($in) {
         
             // if nothing is set yet, then set it

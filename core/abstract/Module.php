@@ -26,6 +26,12 @@
 
         abstract protected function initialize();
 
+        /**
+         * @param MessageParser|Array $message
+         * @return void
+         */
+        abstract public function in($message);
+
 
         /**
          * @param string $chan

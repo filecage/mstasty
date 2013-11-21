@@ -65,11 +65,6 @@
                 $not_real = true;
             }
 
-            // if the string is empty, return PARSE_EMPTY_STRING (important to save CPU when in noblock-mode)
-            if (empty ($raw)) {
-                return 'PARSE_EMPTY_STRING';
-            }
-
             // explode by whitespace for better parsing
             $raw_arr = explode(' ', $raw);
 
