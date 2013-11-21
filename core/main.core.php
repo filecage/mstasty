@@ -26,26 +26,92 @@
     class IRCcore {
     
         // set vars
-        public  $socket;
-        static  $o_socket;
-        static  $mod_list;
-        static  $mod_name2id;
-        static  $mod_file2id;
-        static  $id2command;
-        static  $bound_commands;
-        static  $me;
-        static  $config;
-        static  $timer;
-        static  $obj;
-        private $cfg;
+        /**
+         * The main socket of the connection
+         * @var resource
+         */
+        public $socket;
+
+        /**
+         * @var resource
+         */
+        static public $o_socket;
+
+        /**
+         * List of module references, ordered by id => module
+         * @var AbstractModule[]
+         */
+        static protected $mod_list;
+
+        /**
+         * Mapping for module names to id
+         * @var Array
+         */
+        static protected $mod_name2id;
+
+        /**
+         * Mapping for module file names to id
+         * @var Array
+         */
+        static protected $mod_file2id;
+
+        /**
+         * Mapping for module ids to command
+         * @var Array
+         */
+        static protected $id2command;
+
+        /**
+         * Mapping for commands to module id
+         * @var Array
+         */
+        static protected $bound_commands;
+
+        /**
+         * Information about the bot itself
+         * @var mixed
+         */
+        static public $me;
+
+        /**
+         * Config array
+         * @var Array
+         */
+        static protected $config;
+
+        /**
+         * List of timers in queue
+         * @var Array
+         */
+        static protected $timer;
+
+        /**
+         * Static reference to $this
+         * @var $this
+         */
+        static protected $obj;
+
+        /**
+         * Private config array
+         * TODO: Use static property only
+         * @var Array
+         */
+        protected $cfg;
+
+        /**
+         * Number of the times we tried to reconnect
+         * @var int
+         */
         private $has_retried;
-        private $send_buffer;
+
+        /**
+         * Send buffer (strings in queue)
+         * @var Array
+         */
+        private $send_buffer = Array();
     
-        public function __construct ( $config ) {
-        
-            // send buffer is an array where all commands are given if they need to be sent later
-            $this -> send_buffer = array ();
-        
+        public function __construct ($config) {
+
             // make config global useable
             $this -> cfg         = $config;
             IRCCore::$config     = $config;
@@ -64,7 +130,9 @@
             require_once ( CORE_PATH . 'modules.core.php' );
             require_once ( CORE_PATH . 'handler.core.php' );
             require_once ( CORE_PATH . 'http.core.php' );
-            
+            require_once ( CORE_PATH . 'MessageParser.php' );
+            require_once ( CORE_PATH . 'User.php' );
+
             // create all core-children
             $this -> connect  = new core_connect( $this -> cfg );
             $this -> parser   = new core_parser();
@@ -79,62 +147,56 @@
         public function keepup () {
 
             // keep the connection up until it's closing
-            while ( !feof ( $this -> socket ) && is_resource ( $this -> socket ) ) {
-            
-                $in = $this -> parser -> parse ( fgets ( $this -> socket ) );
+            while (!feof($this->socket)) {
+
+                $message = fgets($this -> socket);
+                $in = $this->parser->parse($message);
                 
                 // check if we got an empty string
-                if ( $in != 'PARSE_EMPTY_STRING' ) {
-                
-                    out ( '<- ' . $in[4], false, 2, true );
-                    
-                    
-                    if ( $in['command'] == 'PING' ) {
-                    
-                        $this -> snd ( 'PONG :' . $in['text']['full'] );
-                    
+                if ($in != 'PARSE_EMPTY_STRING') {
+                    out ('<- ' . $in[4], false, 2, true);
+
+                    if ($in['command'] == 'PING') {
+                        $this->write('PONG :' . $in['text']['full']);
                     }
                 
-                    if ( isset ( IRCCore::$bound_commands[ $in[1] ] ) ) {
-                    
-                        foreach ( IRCCore::$bound_commands [ $in[1] ] as $mod_key => $mod_arr ) {
-                        
-                            if ( !isset ( IRCCore::$mod_list [ $mod_arr['id'] ] ) ) {
-                            
-                                unset ( IRCCore::$bound_commands [ $in[1] ] [ $mod_key ] );
-                                continue;
-                            
-                            }
-                        
-                            if ( is_object ( IRCCore::$mod_list [ $mod_arr['id'] ] ) ) {
-                        
-                                if ( !empty ( $mod_arr['text'] ) ) {
+                    if (isset(IRCCore::$bound_commands[$in[1]])) {
 
-                                    $txt = str_replace ( '*', '', $mod_arr['text'], $count );
-                                    
-                                    if ( $count > 0 ) {
-                                    
-                                        if ( strtoupper ( $txt ) == strtoupper ( substr ( $in['text']['full'], 0, strlen ( $txt ) ) ) ) {
-                                        
-                                            IRCCore::$mod_list [ $mod_arr['id'] ] -> in ( $in );
-                                        
+                        // There are bound commands - parse input to MessageParser object (AbstractModules to expect it as object)
+                        $messageObject = new MessageParser($message);
+
+                        // Go through all the command bindings to see if theres a module we need to call
+                        foreach (IRCCore::$bound_commands[$in[1]] as $mod_key => $mod_arr) {
+
+                            // If the module does no longer exist, remove the binding and continue
+                            if (!isset(IRCCore::$mod_list[ $mod_arr['id']])) {
+                                unset (IRCCore::$bound_commands [$in[1]][$mod_key]);
+                                continue;
+                            }
+
+                            $module = IRCCore::$mod_list[$mod_arr['id']];
+
+                            if (is_object($module)) {
+                                // For legacy reasons, only childs of AbstractModule do accept MessageParser objects
+                                $moduleInput = ($module instanceof AbstractModule) ? $messageObject : $in;
+                        
+                                if (!empty($mod_arr['text'])) {
+                                    // Replace wildcards in registrated text snippet
+                                    $txt = str_replace ('*', '', $mod_arr['text'], $count);
+
+                                    if ($count > 0) {
+                                        if (strtoupper($txt) == strtoupper (substr($in['text']['full'], 0, strlen($txt)))) {
+                                            $module->in($moduleInput);
                                         }
-                                        
                                     }
-                                
-                                    elseif ( strtoupper ( $mod_arr['text'] ) == strtoupper ( implode ( ' ', array_slice ( $in [3][0], 0, count ( explode ( ' ',$mod_arr['text'] ) ) ) ) ) ) {  
-                                    
-                                        IRCCore::$mod_list [ $mod_arr['id'] ] -> in ( $in );
-                                        
+                                    elseif (strtoupper($mod_arr['text']) == strtoupper(implode(' ', array_slice($in[3][0], 0, count(explode(' ', $mod_arr['text'])))))) {
+                                        $module->in($moduleInput);
                                     }
                                     
                                 }
                                 else {
-                                
-                                    IRCCore::$mod_list [ $mod_arr['id'] ] -> in ( $in );
-                                    
+                                    $module->in($moduleInput);
                                 }
-                               
                             }
                         
                         }
@@ -575,6 +637,7 @@
             return IRCCore::$config[$cname][$varname];
             
         }
+
         static function timer ( $sec, $command, $remove=false ) {
         
             // if we got no id to remove, we add a new timer
@@ -679,7 +742,13 @@
             }
         
         }
+
+        static public function getInstance() {
+            return self::$obj;
+        }
     
     }
+
+}
     
 ?>
