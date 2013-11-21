@@ -45,6 +45,12 @@
          */
         protected $isPrivate = false;
 
+        /**
+         * The channel in which the message has been dispatched (if PRIVMSG is not private)
+         * @var string
+         */
+        protected $channel = '';
+
 
         /**
          * Parses the message
@@ -94,6 +100,7 @@
             if ($command == 'PRIVMSG' && strtolower ($arguments[0]) == strtolower ($this->mvar('nick'))) {
                 $this->isPrivate = true;
             } else {
+                $this->channel   = $arguments[0];
                 $this->isPrivate = false;
             }
 
@@ -163,6 +170,15 @@
          */
         public function isPrivate() {
             return $this->isPrivate;
+        }
+
+        /**
+         * The channel in which the message has been dispatched
+         *
+         * @return string
+         */
+        public function getChannel() {
+            return $this->channel;
         }
 
     }
