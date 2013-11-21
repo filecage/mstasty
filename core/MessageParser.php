@@ -101,4 +101,68 @@
             $this->body    = $text;
 
         }
+
+        /**
+         * Returns the raw string
+         *
+         * @return string
+         */
+        public function getRaw() {
+            return $this->raw;
+        }
+
+        /**
+         * Returns the user
+         *
+         * @return User
+         */
+        public function getUser() {
+            return $this->user;
+        }
+
+        /**
+         * Returns the sent command
+         *
+         * @return string
+         */
+        public function getCommand() {
+            return $this->command;
+        }
+
+        /**
+         * Returns the arguments array
+         *
+         * @return array
+         */
+        public function getArguments() {
+            return $this->arguments;
+        }
+
+        /**
+         * Returns the body as array
+         *
+         * @return array
+         */
+        public function getBody() {
+            return $this->body;
+        }
+
+        /**
+         * Returns the body as string
+         *
+         * @return string
+         */
+        public function getBodyAsText() {
+            return implode(' ', $this->body);
+        }
+
+        /**
+         * Whether the message was sent private or not
+         *
+         * @return bool
+         */
+        public function isPrivate() {
+            return $this->isPrivate;
+        }
+
     }
