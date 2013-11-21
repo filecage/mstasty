@@ -746,9 +746,8 @@
         static public function getInstance() {
             return self::$obj;
         }
-    
-    }
 
-}
+
+    }
     
 ?>
