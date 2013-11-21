@@ -487,78 +487,65 @@
             }
         
         }
-        public function register ( $commands, $text='', $silence=false, $mod_id='' ) {
-        
-            if ( empty ( $this -> mod_name ) ) {
-            
-                $mod_name = $mod_id;
-                
-            }
-            else {
-            
-                $mod_name = $this -> mod_name;
-                
-            }
-            if ( empty ( $mod_name ) ) {
-            
+
+        /**
+         * Registers a command or PRIVMSG/text pattern to a module
+         *
+         * @param string|array $commands
+         * @param string $text
+         * @param bool $silence
+         * @param string $mod_id
+         * @param AbstractModule|CoreModule|object $instance
+         */
+        public function register($commands, $text='', $silence=false, $mod_id='', $instance = null) {
+
+            // TODO: Remove registering by $this - should only work by instance
+            $module = (!is_null($instance)) ? $instance : $this;
+            $mod_name = (!empty($module->mod_name)) ? $module->mod_name : $module->mod_id;
+
+            if (empty($mod_name)) {
                 aout('MOD_REGISTER_INVALID_MOD');
-                return false;
-            
+                return;
             }
         
-            if ( is_string ( $commands ) ) {
-        
-                $commands = trim ( $commands );
-                $text     = trim ( $text );
+            if (is_string($commands)) {
+                $commands = trim ($commands);
+                $text     = trim ($text);
                 
-                if ( empty ( $commands ) ) {
-                
+                if (empty($commands)) {
                     aout('MOD_REGISTER_INVALID_VALUES');
-                    
                 }
                 
             }
             else {
-            
-                $text = trim ( $text );
-                
+                $text = trim ($text);
             }
             
-            if ( !empty ( $this -> mod_id ) && empty ( $mod_id ) ) {
-            
-                $mod_id = $this -> mod_id;
-                
+            if (!empty($module->mod_id) && empty($mod_id) ) {
+                $mod_id = $module->mod_id;
             }
                 
-            // check if this module has registered another commands yet
-            if ( !isset ( IRCCore::$mod_list [ $mod_id ] ) && empty ( $mod_id ) ) {
-            
-                if ( is_object ( $this ) ) {
-            
+            // Did this module exist before?
+            if (!isset(IRCCore::$mod_list[$mod_id]) && empty($mod_id)) {
+                if (is_object($module)) {
                     $mod_id         = gen_sess_id ( 30 );
-                    $this -> mod_id = $mod_id;
+                    $module->mod_id = $mod_id;
                     
-                    IRCCore::$mod_list [ $this -> mod_id ] = &$this;
+                    IRCCore::$mod_list[$mod_id] = $module;
                     
-                    if ( $silence !== false ) {
-                    
+                    if ($silence !== false) {
                         aout('MOD_INITIALIZE_SUCCESS', $mod_name );
-                        
                     }
-                    
                 }
-            
             }
             
-            if ( !is_array ( $commands ) ) {
-            
-                $commands = array ( $commands );
-                
+            if (!is_array($commands)) {
+                $commands = array($commands);
             }
             
-            IRCCore::$id2command [ $mod_id ] = array();
+            IRCCore::$id2command[$mod_id] = array();
             
-            foreach ( $commands as $command ) {
+            foreach ($commands as $command) {
             
                 IRCCore::$id2command [ $mod_id ] [] = $command;
         
