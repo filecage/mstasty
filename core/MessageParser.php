@@ -94,10 +94,10 @@
             }
 
             // and get the text
-            $text    = array_slice($raw_arr, (2 + count($arguments)));
+            $text    = array_slice($raw_arr, (2 + count($this->arguments)));
             $text[0] = substr($text[0], 1);
 
-            if ($command == 'PRIVMSG' && strtolower ($arguments[0]) == strtolower ($this->mvar('nick'))) {
+            if ($command == 'PRIVMSG' && strtolower ($arguments[0]) == strtolower (IRCCore::mvar('nick'))) {
                 $this->isPrivate = true;
             } else {
                 $this->channel   = $arguments[0];
