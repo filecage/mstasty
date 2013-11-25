@@ -37,6 +37,7 @@
     define ( 'LANG_PATH',    ROOT_PATH . 'lang/'    );
     define ( 'MODULE_PATH',  ROOT_PATH . 'modules/' );
     define ( 'CORE_PATH',    ROOT_PATH . 'core/'    );
+    define ( 'STORAGE_PATH', ROOT_PATH . 'tdb/'     );
     
     
     // require important functions
