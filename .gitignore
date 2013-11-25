@@ -1,4 +1,5 @@
 .idea/
 modules/tholabs/
-config/
-tdb/
+modules/vendor/
+config/*
+tdb/*
