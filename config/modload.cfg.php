@@ -27,7 +27,7 @@
     // This will only take effect when the bot is started, runtime changes
     // have to be made by the MOD-command sent by PRIVMSG.
 
-   // $core -> load_mod ( 'example.module.php' );
+    $core -> load_mod ( 'spotify.php' );
     
     
 ?>
