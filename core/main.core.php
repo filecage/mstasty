@@ -132,6 +132,7 @@
             require_once ( CORE_PATH . 'http.core.php' );
             require_once ( CORE_PATH . 'MessageParser.php' );
             require_once ( CORE_PATH . 'User.php' );
+            require_once ( CORE_PATH . 'Static/ProtocolHelper.php' );
 
             // create all core-children
             $this -> connect  = new core_connect( $this -> cfg );
