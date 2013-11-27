@@ -27,6 +27,11 @@
     class core_channels Extends IRCCore {
     
         private $chanlist;
+
+        /**
+         * @var ChannelPool
+         */
+        private $channelPool;
     
     
         public function __construct () {
@@ -52,6 +57,8 @@
             // register part numerics
             $this -> register ( 'KICK','',false );
             //$this -> register ( '','',false );
+
+            $this->channelPool = ChannelPool::getInstance();
         
         }
         
