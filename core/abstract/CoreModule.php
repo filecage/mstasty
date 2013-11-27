@@ -9,22 +9,16 @@
         public $mod_name;
 
         /**
+         * Module id
+         * @var string
+         */
+        public $mod_id;
+
+        /**
          * Instance of IRCCore
          * @var IRCCore
          */
         protected $core;
-
-        /**
-         * An array of commands that should be registered to this module
-         * @var Array
-         */
-        protected $registerCommands = Array();
-
-        /**
-         * An array of messages (PRIVMSGs) that should be registered to this module
-         * @var array
-         */
-        protected $registerMessages = Array();
 
         /**
          * Gets an instance of core and registers all necessary commands/privmsgs
@@ -33,18 +27,30 @@
          * @constructor
          */
         public function __construct() {
-           $this->core = IRCCore::getInstance();
+            $this->core     = IRCCore::getInstance();
+            $this->mod_id   = uniqid('core-mod_');
+            $this->mod_name = $this->mod_id;
+
             if (!$this->core instanceof IRCCore) {
                 throw new Exception('Cannot create instance of Core module before core has been initialized');
             }
-
-            foreach($this->registerCommands as $command) {
-                $this->core->register($command);
-            }
-
-            foreach ($this->registerMessages as $message) {
-                $this->core->register('PRIVMSG', $message);
-            }
         }
+
+        /**
+         * Wrapper method for registering commands
+         *
+         * @param string $command
+         * @param string $arguments
+         * @param bool $silence
+         * @see IRCCore::register
+         */
+        protected function register($command, $arguments = '', $silence = false) {
+            $this->core->register((string) $command, $arguments, $silence, $this->mod_id, $this);
+        }
+
+        /**
+         * @param MessageParser $message
+         */
+        abstract public function in(MessageParser $message);
 
     }
