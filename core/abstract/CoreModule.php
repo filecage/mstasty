@@ -28,8 +28,7 @@
          */
         public function __construct() {
             $this->core     = IRCCore::getInstance();
-            $this->mod_id   = uniqid('core-mod_');
-            $this->mod_name = $this->mod_id;
+            $this->mod_name = uniqid('core-mod_');
 
             if (!$this->core instanceof IRCCore) {
                 throw new Exception('Cannot create instance of Core module before core has been initialized');
