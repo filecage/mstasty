@@ -53,8 +53,6 @@
          */
         public function in(MessageParser $message) {
 
-            var_dump($message);
-
             switch ($message->getCommand()) {
 
                 case self::RPL_NAMREPLY:
@@ -103,6 +101,7 @@
          * @param MessageParser $message
          */
         protected function storeNamesReply(MessageParser $message) {
+
             if (isset($this->temporaryChannels[$message->getChannel()])) {
                 $this->channels[$message->getChannel()] = $this->temporaryChannels[$message->getChannel()];
 
