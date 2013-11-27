@@ -124,6 +124,8 @@
             IRCCore::$timer[1] = array();
             
             // require all core-children
+            require_once ( CORE_PATH . 'Static/ProtocolHelper.php' );
+            require_once ( CORE_PATH . 'Abstract/CoreModule.php' );
             require_once ( CORE_PATH . 'connect.core.php' );
             require_once ( CORE_PATH . 'parse.core.php' );
             require_once ( CORE_PATH . 'channels.core.php' );
@@ -132,7 +134,8 @@
             require_once ( CORE_PATH . 'http.core.php' );
             require_once ( CORE_PATH . 'MessageParser.php' );
             require_once ( CORE_PATH . 'User.php' );
-            require_once ( CORE_PATH . 'Static/ProtocolHelper.php' );
+            require_once ( CORE_PATH . 'ChannelPool.php' );
+            require_once ( CORE_PATH . 'Channel.php' );
 
             // create all core-children
             $this -> connect  = new core_connect( $this -> cfg );
@@ -731,6 +734,9 @@
         
         }
 
+        /**
+         * @return $this
+         */
         static public function getInstance() {
             return self::$obj;
         }
