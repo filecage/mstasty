@@ -182,7 +182,7 @@
 
                             if (is_object($module)) {
                                 // For legacy reasons, only childs of AbstractModule do accept MessageParser objects
-                                $moduleInput = ($module instanceof AbstractModule) ? $messageObject : $in;
+                                $moduleInput = ($module instanceof AbstractModule || $module instanceof CoreModule) ? $messageObject : $in;
                         
                                 if (!empty($mod_arr['text'])) {
                                     // Replace wildcards in registrated text snippet
