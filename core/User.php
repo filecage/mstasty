@@ -57,10 +57,20 @@
          * @param string $raw
          */
         public function __construct($raw = '') {
+            if (!empty($raw)) {
+                $this->parseRaw($raw);
+            }
+        }
 
+        /**
+         * Raw parser
+         *
+         * @param $raw
+         * @return $this
+         */
+        public function parseRaw($raw) {
             $sender     = $raw;
             $sender_arr = Array();
-
 
             // check if sender is a client or a server
             if (strstr($sender, '!') !== false && strstr ($sender, '@') !== false) {
@@ -89,6 +99,58 @@
             $this->host   = $sender_arr[2];
             $this->prefix = $sender_arr[4];
 
+            return $this;
         }
+
+        /**
+         * @param string $nick
+         */
+        public function setNick($nick) {
+            $this->nick = $nick;
+        }
+
+        /**
+         * @return string
+         */
+        public function getHost() {
+            return $this->host;
+        }
+
+        /**
+         * @return string
+         */
+        public function getIdent() {
+            return $this->ident;
+        }
+
+        /**
+         * @return boolean
+         */
+        public function getIsSelf() {
+            return $this->isSelf;
+        }
+
+        /**
+         * @return string
+         */
+        public function getNick() {
+            return $this->nick;
+        }
+
+        /**
+         * @return string
+         */
+        public function getPrefix() {
+            return $this->prefix;
+        }
+
+        /**
+         * @return string
+         */
+        public function getRaw() {
+            return $this->raw;
+        }
+
+
 
     }
