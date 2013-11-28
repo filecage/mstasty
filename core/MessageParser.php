@@ -100,10 +100,17 @@
             if ($command == 'PRIVMSG' && strtolower ($arguments[0]) == strtolower (IRCCore::mvar('nick'))) {
                 $this->isPrivate = true;
             } else {
+
                 if (ProtocolHelper::isChannel($arguments[0])) {
                     $this->channel = $arguments[0];
-                } elseif (isset($arguments[1]) && ProtocolHelper::isChannel($arguments[1])) {
-                    $this->channel = $arguments[1];
+                } else {
+                    // Find channel inside of the argument list
+                    foreach ($arguments as $argument) {
+                        if (ProtocolHelper::isChannel($argument)) {
+                            $this->channel = $argument;
+                            break;
+                        }
+                    }
                 }
 
                 $this->isPrivate = false;
