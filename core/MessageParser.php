@@ -101,14 +101,16 @@
                 $this->isPrivate = true;
             } else {
 
-                if (ProtocolHelper::isChannel($arguments[0])) {
-                    $this->channel = $arguments[0];
-                } else {
-                    // Find channel inside of the argument list
-                    foreach ($arguments as $argument) {
-                        if (ProtocolHelper::isChannel($argument)) {
-                            $this->channel = $argument;
-                            break;
+                if (!empty($arguments)) {
+                    if (ProtocolHelper::isChannel($arguments[0])) {
+                        $this->channel = $arguments[0];
+                    } else {
+                        // Find channel inside of the argument list
+                        foreach ($arguments as $argument) {
+                            if (ProtocolHelper::isChannel($argument)) {
+                                $this->channel = $argument;
+                                break;
+                            }
                         }
                     }
                 }
