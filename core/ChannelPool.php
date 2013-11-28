@@ -4,6 +4,11 @@
 
         const RPL_NAMREPLY   = 353;
         const RPL_ENDOFNAMES = 366;
+        const CMD_JOIN       = 'JOIN';
+        const CMD_KICK       = 'KICK';
+        const CMD_MODE       = 'MODE';
+        const CMD_PART       = 'PART';
+        const CMD_QUIT       = 'QUIT';
 
         /**
          * Current active instance
@@ -94,6 +99,7 @@
                         break;
                 }
             }
+
         }
 
         /**
@@ -101,13 +107,8 @@
          * @param MessageParser $message
          */
         protected function storeNamesReply(MessageParser $message) {
-
             if (isset($this->temporaryChannels[$message->getChannel()])) {
                 $this->channels[$message->getChannel()] = $this->temporaryChannels[$message->getChannel()];
-
-                var_dump($this->channels[$message->getChannel()]);
-
-
                 unset($this->temporaryChannels[$message->getChannel()]);
             }
         }
