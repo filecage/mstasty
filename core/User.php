@@ -99,6 +99,12 @@
             $this->host   = $sender_arr[2];
             $this->prefix = $sender_arr[4];
 
+            if ($this->nick == IRCCore::mvar('nick')) {
+                $this->isSelf = true;
+            } else {
+                $this->isSelf = false;
+            }
+
             return $this;
         }
 
