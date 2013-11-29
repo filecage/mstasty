@@ -10,10 +10,10 @@
     class User {
 
         /**
-         * The raw user identifier
+         * The raw user mask
          * @var string
          */
-        protected $raw;
+        protected $mask;
 
         /**
          * The nick of the user
@@ -54,22 +54,22 @@
         /**
          * Parses the given raw identifier
          *
-         * @param string $raw
+         * @param string $mask
          */
-        public function __construct($raw = '') {
-            if (!empty($raw)) {
-                $this->parseRaw($raw);
+        public function __construct($mask = '') {
+            if (!empty($mask)) {
+                $this->parseMask($mask);
             }
         }
 
         /**
          * Raw parser
          *
-         * @param $raw
+         * @param string $mask
          * @return $this
          */
-        public function parseRaw($raw) {
-            $sender     = $raw;
+        public function parseMask($mask) {
+            $sender     = $mask;
             $sender_arr = Array();
 
             // check if sender is a client or a server
@@ -93,7 +93,7 @@
                 $sender_arr[4] = '';
             }
 
-            $this->raw    = $raw;
+            $this->mask   = $mask;
             $this->nick   = $sender_arr[0];
             $this->ident  = $sender_arr[1];
             $this->host   = $sender_arr[2];
@@ -153,8 +153,8 @@
         /**
          * @return string
          */
-        public function getRaw() {
-            return $this->raw;
+        public function getMask() {
+            return $this->mask;
         }
 
 
