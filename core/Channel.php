@@ -80,6 +80,32 @@
             }
         }
 
+        /**
+         * @return string
+         */
+        public function getChannel() {
+            return $this->channel;
+        }
 
+        /**
+         * @return \User[]
+         */
+        public function getOps() {
+            return $this->ops;
+        }
+
+        /**
+         * @return \User[]
+         */
+        public function getUsers() {
+            return $this->users;
+        }
+
+        /**
+         * @return \User[]
+         */
+        public function getVoiced() {
+            return $this->voiced;
+        }
 
     }
