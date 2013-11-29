@@ -52,6 +52,12 @@
         protected $isSelf = false;
 
         /**
+         * Internal ID
+         * @var int
+         */
+        protected $id;
+
+        /**
          * Parses the given raw identifier
          *
          * @param string $mask
@@ -116,6 +122,13 @@
         }
 
         /**
+         * @param int $id
+         */
+        public function setId($id) {
+            $this->id = $id;
+        }
+
+        /**
          * @return string
          */
         public function getHost() {
@@ -155,6 +168,13 @@
          */
         public function getMask() {
             return $this->mask;
+        }
+
+        /**
+         * @return int
+         */
+        public function getId() {
+            return $this->id;
         }
 
 
