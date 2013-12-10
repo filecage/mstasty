@@ -51,6 +51,12 @@
          */
         protected $channel = '';
 
+        /**
+         * A string to address an answer without checking if it was public (channel) or private (nick)
+         * @var string
+         */
+        protected $sender = '';
+
 
         /**
          * Parses the message
@@ -118,6 +124,7 @@
                 $this->isPrivate = false;
             }
 
+            $this->sender  = ($this->isPrivate) ? $this->user->getNick() : $this->channel;
             $this->command = $command;
             $this->body    = $text;
 
@@ -193,6 +200,15 @@
          */
         public function getChannel() {
             return $this->channel;
+        }
+
+        /**
+         * The channel or nickname to reply to
+         *
+         * @return string
+         */
+        public function getSender() {
+            return $this->sender;
         }
 
     }
