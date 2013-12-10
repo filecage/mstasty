@@ -28,6 +28,7 @@
     // have to be made by the MOD-command sent by PRIVMSG.
 
     $core -> load_mod ( 'spotify.php' );
-    
+    $core -> load_mod ( 'reminder.php' );
+
     
 ?>
