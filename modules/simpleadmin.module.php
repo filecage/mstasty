@@ -51,12 +51,6 @@
                 }
                 
             }
-            else {
-
-                if (isset($in['text']['priv'])) {
-                    $core -> notice ( $in['sender']['nick'], '%COMMAND_PERMISSION_DENIED%' );
-                }
-            }
             
         }
         
